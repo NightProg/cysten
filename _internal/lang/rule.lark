@@ -1,0 +1,44 @@
+start: instruction+
+
+instruction: package 
+            | require 
+            | include 
+            | include_all
+            | exe
+
+package: "package" STRING "{" package_meta* "}" 
+
+package_meta: version_id  
+            | author_id 
+            | description_id  
+            | license_id 
+
+author_id: "author" IDENT
+description_id: "description" STRING
+version_id: "version" version
+version: INT
+        | INT "." INT  
+        | INT "." INT "." INT
+license_id: "license" STRING
+require:  "require" STRING "{" require_option* "}"
+require_option: require_from | require_version 
+require_from: "from" STRING 
+require_version: "version" version
+
+include: "include" STRING 
+include_all: "include_all" STRING
+
+exe: "exe" STRING "{" exe_meta* "}"
+exe_meta: exe_link | exe_all | exe_file 
+exe_link: "link" STRING 
+exe_all: "all" STRING 
+exe_file: "file" STRING
+
+IDENT: LETTER (LETTER | INT)+
+
+%import common.ESCAPED_STRING   -> STRING
+%import common.SIGNED_NUMBER    -> NUMBER
+%import common.WS
+%import common.LETTER
+%import common.INT 
+%ignore WS
